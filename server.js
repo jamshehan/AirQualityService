@@ -15,10 +15,10 @@ app.post('/slackcommand', (req, res) => {
 	});
 	if (req.body.command === '/current-temp')
 	{
-		request('https://api.thingspeak.com/channels/761289/fields/1/last.txt', (err, resp, body) => {
-			//if (err) {return res.status(500).send({ message: console.log(err) }); }
-			//console.log(body);
-			res.send(`The latest temperature reading is ${body} degrees F`);
+		request('https://api.thingspeak.com/channels/761289/fields/1.json?results=1', (err, resp, body) => {
+			if (err) {return res.status(500).send({ message: console.log(err) }); }			
+            const deserialized = JSON.parse(body);
+			res.send(`The latest temperature reading is ${deserialized.feeds[0].field1}°F, as of ${deserialized.feeds[0].created_at}`);
 		});
 	}
 	else {
